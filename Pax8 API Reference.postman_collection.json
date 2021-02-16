@@ -1,0 +1,3019 @@
+{
+	"info": {
+		"_postman_id": "28d7fb1b-2014-4d37-9e87-1ab00565dd26",
+		"name": "Pax8 API Reference",
+		"description": "Welcome to the Pax8 REST API. The API enables users to **automate product orders** for customers, **query** account records, and retrieve details of **currently provisioned products and subscriptions**.\n\nAPI resources allows users to create new **orders**, update and cancel **subscriptions**, and fetch all of the **product and pricing** information needed to complete those transactions.\n\nCalls to the API use **standard HTTP requests**. Each call returns **JSON-formatted data** along with **standard HTTP response codes**.\n\n# Getting started\nLearn the basics of working with Pax8's APIs:\n- [What is a REST API?](#section/What-is-a-REST-API)\n- [Authentication](#section/Authentication)\n- [Using the API](#section/Using-the-API)\n- [Error Handling](#section/Errors)\n- [Glossary](#section/Glossary)\n- [API Resource Reference](#section/API-Resource-Reference)\n\n# What is a REST API?\n  If you're new to REST (Representative State Transfer), you'll find abundant material across the web explaining the underlying concepts. But **you don't need to understand all the theory and details behind REST just to use the Pax8 API**.\n\n  REST isn't a technology or even a specification -- it's a design pattern that ensures your client and the API platform remain loosely coupled.\n\n  The API is language independent; meaning, you can develop your client in a preferred language. Most languages offer libraries specifically aimed at helping to manage and send HTTP requests.\n\n  ## What do API requests do?\n  Saying an API is RESTful implies a few simple things:\n  - **API calls perform CRUD functions**\n  Your client interacts with the API as it would a database, with simple CRUD (**C**reate, **R**ead, **U**pdate, **D**elete) operations.\n  - **API calls are made via HTTP requests**\n  Those CRUD operations are implemented in the Pax8 API as simple HTTP requests (GET, POST, PUT, and DELETE) your client makes to a specified, published URL\n  - **Really, REST is just CRUD**\n  Like a database, the API just lets you read, write, update, and delete data. (Using those HTTP requests). Those are the basics.\n\n  Like a database, the server maintains no state information about your client or user interface. But that doesn't mean there's no logic on the server side, only that your client doesn't need to worry about it. A good example of this is when you create an order (using POST with the orders endpoint). For your client-side code, that's just like creating an order record in the database. The server handles all the logistics of provisioning based on the parameters you sent.\n\n  ##  How do I format requests?\n\n  The [API Resource Reference](*) below provides the necessary information to make HTTP requests -- the request verb to use (GET, PUT etc.), the URL (endpoint) to use, and the data parameters you must send to return the data you want back -- orders, product info, subscriptions, and so on.\n\n\n# Create a Developer Application\n\n### Steps to create a developer app:\n**1)** Navigate to [Pax8](https://app.pax8.com) and **login**\n\n**2)** Hover over your name in the top navigation bar, and click **User Settings**\n\n**3)** Click on the **Manage Developer Apps** tab\n\n**4)** Click **+ Create**\n\n**5)** Give your app a name and click save\n\n**6)** Copy the **cURL example** by clicking the **copy to clipboard** icon\n\n**7)** Use the cURL example to retrieve an API **Access Token**\n\n# Authentication\n The Pax8 API authenticate requests using [OAuth 2.0](https://oauth.net/2/). After setting up your creating your developer application, you'll be given a **client_id** and a **client_secret** to authenticate with the API.\n\n Access Tokens retrieved will have a time to live of one day. You should not need to request a new access token before every request. \n  \n Your API keys provide full access to ordering functionality, so use caution and don't paste them in cleartext to source code, customer code, or shared spaces.\n\n\n > ℹ️ **NOTE** Although we keep referring to HTTP standards, the literal syntax of all requests to the API _must_ use HTTPS. API requests NOT made through HTTPS will fail.\n\n\n<!-- ReDoc-Inject: <security-definitions> -->\n\n# Using the API\nAPI-savvy developers can dive into the Reference guide. But if you'd like a gentler, more step-by-step introduction to the API, check out the guide below to get up and running quickly.\n\n## Making your first API request\n  Once you've gathered all the items listed below, you should be just a few minutes away from making your first call to the API.\n\n### What you'll need to start\n#### ✅ API keys\n\n#### ✅ Internet access\n\n#### ✅ An API client to generate requests. Either...\n  - Your own **client** code\n  OR\n  - **[Postman](https://learning.postman.com/)** or similar API test application (no coding required)\n  OR\n  - **cURL** from the command line/terminal\n\n### Formatting the request\nStarting with a simple GET request is the easiest way to confirm you have connectivity to the API, you can authenticate, and you're getting data back from the API\n\n# Response codes\nThe API uses [standard HTTP status codes](https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) to indicate the success or failure of the API call. All requests return one of these standard HTTP response codes\n\n| Id        |Meaning                | Description                                                               |\n| :---------| :----------           | :----------                                                               |\n| ```200``` | **OK**                |  Everything worked as expected                                            |\n| ```400``` | **Bad Request**       |  The request was unacceptable, often due to  missing a required parameter |\n| ```401``` | **Unauthorized**      |  No valid API key provided                                               |\n| ```403``` | **Forbidden**         |  The API key doesn't have permissions to perform the request              |\n| ```404``` | **Not Found**         |  The requested resource doesn't exist                                     |\n| ```422``` | **Unprocessable Entity**  | The request syntax was correct but an exception was caught in processing  |\n| ```429``` | **Too Many Requests**  | Too many requests hit the API quickly                                |\n| ```50x``` | **Server Errors**     |  Something went wrong on Pax8 server (These should be rare)              |\n\n# Errors\nThe body of each error response contains JSON in the following format:\n```Json\n{\n  \"errors\": [\"<specific error message>\"]\n}\n```\nFor example...\n```JSON\n{\n  \"errors\": [\"Company Not Found: <companyId>\"]\n}\n```\n\n  # Glossary\n  The terms listed below carry specific meaning in the Pax8 ecosphere\n\n  - ***agent***\n  A Pax8 partner that is a consultant, recommender, or other intermediary but not directly involved in production as an MSP\n\n  - ***company***\n  Any of our partner's customers who are served through the Pax8 platform\n\n  - ***dependency***\n  Any components that are required to order a given product\n\n  - ***endpoint***\n  A URL designated for use by HTTP requests to the API\n\n  - ***HTTP request***\n  A standard HTTP verb used with an API endpoint (URL). It's a function call to the API. ex. GET /products/{productId}\n\n  - ***MSP***\n  Managed service provider, the Pax8 partner who directly serves their customers via the Pax8 platform\n\n  - ***partner***\n  The MSP or agent whose customers are served via the Pax8 platform\n\n  - ***product***\n  A single offering from Pax8 identified by a SKU\n\n  - ***provisioning***\n  The process of setting up a product for use by a customer, and configuring it to conform to specifications in the order\n\n  - ***response codes***\n  Standard HTTP result that describes the result of a given request to the API\n\n  - ***resource***\n  In the context of an API, resource typically synonymous with an API endpoint or group of endpoints\n\n  - ***subscription***\n  The subscription object defines the customer's commitment to a service\n\n  - ***self service***\n  Refers to a company whose end-users are allowed to access the Portal directly. End-users are not currently permitted API access\n\n  - ***token***\n  A character string that gives you access to the API\n\n  - ***vendor***\n  Third-party provider of products or services\n\n\n# Creating an Active Company\nBefore creating an order for a Company, the Company must be in an ```Active``` status. Upon initial creation of a Company, the Company will be placed into an ```Inactive``` status. To get the Company into an ```Active``` status, add one or more contacts that fulfill all ```primary``` contact constraints. A Company is required to have a ```primary``` Contact for each Contact Type (```\"Admin\"```, ```\"Billing\"```, ```\"Technical\"```). One contact with all three types and marked as ```primary``` for each type is sufficient\n\n# API Resource Reference\n------------\n",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "companies",
+			"item": [
+				{
+					"name": "{company Id}",
+					"item": [
+						{
+							"name": "contacts",
+							"item": [
+								{
+									"name": "{contact Id}",
+									"item": [
+										{
+											"name": "Fetch a contact",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/companies/:companyId/contacts/:contactId",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"companies",
+														":companyId",
+														"contacts",
+														":contactId"
+													],
+													"variable": [
+														{
+															"key": "contactId",
+															"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+															"type": "string",
+															"description": "(Required) "
+														}
+													]
+												},
+												"description": "Returns a contact"
+											},
+											"response": [
+												{
+													"name": "Contact or company not found",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"description": {
+																	"content": "Added as a part of security scheme: oauth2",
+																	"type": "text/plain"
+																},
+																"key": "Authorization",
+																"value": "<token>"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/companies/:companyId/contacts/:contactId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"companies",
+																":companyId",
+																"contacts",
+																":contactId"
+															],
+															"variable": [
+																{
+																	"key": "companyId"
+																},
+																{
+																	"key": "contactId"
+																}
+															]
+														}
+													},
+													"status": "Not Found",
+													"code": 404,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+												},
+												{
+													"name": "Invalid contact update",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"description": {
+																	"content": "Added as a part of security scheme: oauth2",
+																	"type": "text/plain"
+																},
+																"key": "Authorization",
+																"value": "<token>"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/companies/:companyId/contacts/:contactId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"companies",
+																":companyId",
+																"contacts",
+																":contactId"
+															],
+															"variable": [
+																{
+																	"key": "companyId"
+																},
+																{
+																	"key": "contactId"
+																}
+															]
+														}
+													},
+													"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+													"code": 422,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+												},
+												{
+													"name": "Successful operation",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"description": {
+																	"content": "Added as a part of security scheme: oauth2",
+																	"type": "text/plain"
+																},
+																"key": "Authorization",
+																"value": "<token>"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/companies/:companyId/contacts/:contactId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"companies",
+																":companyId",
+																"contacts",
+																":contactId"
+															],
+															"variable": [
+																{
+																	"key": "companyId"
+																},
+																{
+																	"key": "contactId"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "null"
+												}
+											]
+										},
+										{
+											"name": "Update a contact",
+											"request": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"firstName\": \"anim pariatur Duis moll\",\n    \"lastName\": \"culpa \",\n    \"email\": \"0lx8WPoFta73Db@vFcAyDqXdHEwuw.vuay\",\n    \"phone\": \"\",\n    \"types\": [\n        {\n            \"type\": \"Technical\",\n            \"primary\": true\n        },\n        {\n            \"type\": \"Billing\",\n            \"primary\": false\n        }\n    ]\n}"
+												},
+												"url": {
+													"raw": "{{baseUrl}}/companies/:companyId/contacts/:contactId",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"companies",
+														":companyId",
+														"contacts",
+														":contactId"
+													],
+													"variable": [
+														{
+															"key": "contactId",
+															"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+															"type": "string",
+															"description": "(Required) "
+														}
+													]
+												},
+												"description": "Update a contacts information"
+											},
+											"response": [
+												{
+													"name": "Invalid contact update",
+													"originalRequest": {
+														"method": "PUT",
+														"header": [
+															{
+																"description": {
+																	"content": "Added as a part of security scheme: oauth2",
+																	"type": "text/plain"
+																},
+																"key": "Authorization",
+																"value": "<token>"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n    \"firstName\": \"anim pariatur Duis moll\",\n    \"lastName\": \"culpa \",\n    \"email\": \"0lx8WPoFta73Db@vFcAyDqXdHEwuw.vuay\",\n    \"phone\": \"\",\n    \"types\": [\n        {\n            \"type\": \"Technical\",\n            \"primary\": true\n        },\n        {\n            \"type\": \"Billing\",\n            \"primary\": false\n        }\n    ]\n}"
+														},
+														"url": {
+															"raw": "{{baseUrl}}/companies/:companyId/contacts/:contactId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"companies",
+																":companyId",
+																"contacts",
+																":contactId"
+															],
+															"variable": [
+																{
+																	"key": "companyId"
+																},
+																{
+																	"key": "contactId"
+																}
+															]
+														}
+													},
+													"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+													"code": 422,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+												},
+												{
+													"name": "Contact or company not found",
+													"originalRequest": {
+														"method": "PUT",
+														"header": [
+															{
+																"description": {
+																	"content": "Added as a part of security scheme: oauth2",
+																	"type": "text/plain"
+																},
+																"key": "Authorization",
+																"value": "<token>"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n    \"firstName\": \"anim pariatur Duis moll\",\n    \"lastName\": \"culpa \",\n    \"email\": \"0lx8WPoFta73Db@vFcAyDqXdHEwuw.vuay\",\n    \"phone\": \"\",\n    \"types\": [\n        {\n            \"type\": \"Technical\",\n            \"primary\": true\n        },\n        {\n            \"type\": \"Billing\",\n            \"primary\": false\n        }\n    ]\n}"
+														},
+														"url": {
+															"raw": "{{baseUrl}}/companies/:companyId/contacts/:contactId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"companies",
+																":companyId",
+																"contacts",
+																":contactId"
+															],
+															"variable": [
+																{
+																	"key": "companyId"
+																},
+																{
+																	"key": "contactId"
+																}
+															]
+														}
+													},
+													"status": "Not Found",
+													"code": 404,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+												},
+												{
+													"name": "Successful operation",
+													"originalRequest": {
+														"method": "PUT",
+														"header": [
+															{
+																"description": {
+																	"content": "Added as a part of security scheme: oauth2",
+																	"type": "text/plain"
+																},
+																"key": "Authorization",
+																"value": "<token>"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\n    \"firstName\": \"anim pariatur Duis moll\",\n    \"lastName\": \"culpa \",\n    \"email\": \"0lx8WPoFta73Db@vFcAyDqXdHEwuw.vuay\",\n    \"phone\": \"\",\n    \"types\": [\n        {\n            \"type\": \"Technical\",\n            \"primary\": true\n        },\n        {\n            \"type\": \"Billing\",\n            \"primary\": false\n        }\n    ]\n}"
+														},
+														"url": {
+															"raw": "{{baseUrl}}/companies/:companyId/contacts/:contactId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"companies",
+																":companyId",
+																"contacts",
+																":contactId"
+															],
+															"variable": [
+																{
+																	"key": "companyId"
+																},
+																{
+																	"key": "contactId"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "text/plain"
+														}
+													],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										},
+										{
+											"name": "Delete a contact",
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/companies/:companyId/contacts/:contactId",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"companies",
+														":companyId",
+														"contacts",
+														":contactId"
+													],
+													"variable": [
+														{
+															"key": "contactId",
+															"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+															"type": "string",
+															"description": "(Required) "
+														}
+													]
+												},
+												"description": "Deletes a contact"
+											},
+											"response": [
+												{
+													"name": "Contact or company not found",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [
+															{
+																"description": {
+																	"content": "Added as a part of security scheme: oauth2",
+																	"type": "text/plain"
+																},
+																"key": "Authorization",
+																"value": "<token>"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/companies/:companyId/contacts/:contactId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"companies",
+																":companyId",
+																"contacts",
+																":contactId"
+															],
+															"variable": [
+																{
+																	"key": "companyId"
+																},
+																{
+																	"key": "contactId"
+																}
+															]
+														}
+													},
+													"status": "Not Found",
+													"code": 404,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+												},
+												{
+													"name": "Invalid contact delete",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [
+															{
+																"description": {
+																	"content": "Added as a part of security scheme: oauth2",
+																	"type": "text/plain"
+																},
+																"key": "Authorization",
+																"value": "<token>"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/companies/:companyId/contacts/:contactId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"companies",
+																":companyId",
+																"contacts",
+																":contactId"
+															],
+															"variable": [
+																{
+																	"key": "companyId"
+																},
+																{
+																	"key": "contactId"
+																}
+															]
+														}
+													},
+													"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+													"code": 422,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+												},
+												{
+													"name": "Successful operation",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [
+															{
+																"description": {
+																	"content": "Added as a part of security scheme: oauth2",
+																	"type": "text/plain"
+																},
+																"key": "Authorization",
+																"value": "<token>"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/companies/:companyId/contacts/:contactId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"companies",
+																":companyId",
+																"contacts",
+																":contactId"
+															],
+															"variable": [
+																{
+																	"key": "companyId"
+																},
+																{
+																	"key": "contactId"
+																}
+															]
+														}
+													},
+													"status": "No Content",
+													"code": 204,
+													"_postman_previewlanguage": "text",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "text/plain"
+														}
+													],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "Create a new Contact",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"firstName\": \"ea dolor irure\",\n    \"lastName\": \"anim et laborum tempor\",\n    \"email\": \"GzNQ806@jrcoHBqKqVclqXMcZUrCgVbrd.cve\",\n    \"phone\": \"tempor mollit adipisicing ad\",\n    \"types\": [\n        {\n            \"type\": \"Admin\",\n            \"primary\": false\n        },\n        {\n            \"type\": \"Technical\",\n            \"primary\": true\n        }\n    ]\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/companies/:companyId/contacts",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"companies",
+												":companyId",
+												"contacts"
+											],
+											"variable": [
+												{
+													"key": "companyId",
+													"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+													"type": "string",
+													"description": "(Required) "
+												}
+											]
+										},
+										"description": "Creates a new Contact"
+									},
+									"response": [
+										{
+											"name": "Invalid contact create",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"description": {
+															"content": "Added as a part of security scheme: oauth2",
+															"type": "text/plain"
+														},
+														"key": "Authorization",
+														"value": "<token>"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"firstName\": \"anim pariatur Duis moll\",\n    \"lastName\": \"culpa \",\n    \"email\": \"0lx8WPoFta73Db@vFcAyDqXdHEwuw.vuay\",\n    \"phone\": \"\",\n    \"types\": [\n        {\n            \"type\": \"Technical\",\n            \"primary\": true\n        },\n        {\n            \"type\": \"Billing\",\n            \"primary\": false\n        }\n    ]\n}"
+												},
+												"url": {
+													"raw": "{{baseUrl}}/companies/:companyId/contacts",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"companies",
+														":companyId",
+														"contacts"
+													],
+													"variable": [
+														{
+															"key": "companyId"
+														}
+													]
+												}
+											},
+											"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+											"code": 422,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+										},
+										{
+											"name": "Company not found",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"description": {
+															"content": "Added as a part of security scheme: oauth2",
+															"type": "text/plain"
+														},
+														"key": "Authorization",
+														"value": "<token>"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"firstName\": \"anim pariatur Duis moll\",\n    \"lastName\": \"culpa \",\n    \"email\": \"0lx8WPoFta73Db@vFcAyDqXdHEwuw.vuay\",\n    \"phone\": \"\",\n    \"types\": [\n        {\n            \"type\": \"Technical\",\n            \"primary\": true\n        },\n        {\n            \"type\": \"Billing\",\n            \"primary\": false\n        }\n    ]\n}"
+												},
+												"url": {
+													"raw": "{{baseUrl}}/companies/:companyId/contacts",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"companies",
+														":companyId",
+														"contacts"
+													],
+													"variable": [
+														{
+															"key": "companyId"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+										},
+										{
+											"name": "Successful operation",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"description": {
+															"content": "Added as a part of security scheme: oauth2",
+															"type": "text/plain"
+														},
+														"key": "Authorization",
+														"value": "<token>"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"firstName\": \"anim pariatur Duis moll\",\n    \"lastName\": \"culpa \",\n    \"email\": \"0lx8WPoFta73Db@vFcAyDqXdHEwuw.vuay\",\n    \"phone\": \"\",\n    \"types\": [\n        {\n            \"type\": \"Technical\",\n            \"primary\": true\n        },\n        {\n            \"type\": \"Billing\",\n            \"primary\": false\n        }\n    ]\n}"
+												},
+												"url": {
+													"raw": "{{baseUrl}}/companies/:companyId/contacts",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"companies",
+														":companyId",
+														"contacts"
+													],
+													"variable": [
+														{
+															"key": "companyId"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "null"
+										}
+									]
+								},
+								{
+									"name": "Fetch a paginated list of contacts",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/companies/:companyId/contacts?page=0&size=10",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"companies",
+												":companyId",
+												"contacts"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "0",
+													"description": "The page number to request for in the companies list"
+												},
+												{
+													"key": "size",
+													"value": "10",
+													"description": "Return this number of company records per page"
+												}
+											],
+											"variable": [
+												{
+													"key": "companyId",
+													"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+													"type": "string",
+													"description": "(Required) "
+												}
+											]
+										},
+										"description": "Returns a paginated list of contacts ordered by ```createDate``` descending"
+									},
+									"response": [
+										{
+											"name": "Successful operation",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"description": {
+															"content": "Added as a part of security scheme: oauth2",
+															"type": "text/plain"
+														},
+														"key": "Authorization",
+														"value": "<token>"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/companies/:companyId/contacts?page=0&size=10",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"companies",
+														":companyId",
+														"contacts"
+													],
+													"query": [
+														{
+															"key": "page",
+															"value": "0"
+														},
+														{
+															"key": "size",
+															"value": "10"
+														}
+													],
+													"variable": [
+														{
+															"key": "companyId"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "null"
+										},
+										{
+											"name": "Company not found",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"description": {
+															"content": "Added as a part of security scheme: oauth2",
+															"type": "text/plain"
+														},
+														"key": "Authorization",
+														"value": "<token>"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/companies/:companyId/contacts?page=0&size=10",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"companies",
+														":companyId",
+														"contacts"
+													],
+													"query": [
+														{
+															"key": "page",
+															"value": "0"
+														},
+														{
+															"key": "size",
+															"value": "10"
+														}
+													],
+													"variable": [
+														{
+															"key": "companyId"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Fetch a single company record by companyId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/companies/:companyId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"companies",
+										":companyId"
+									],
+									"variable": [
+										{
+											"key": "companyId",
+											"value": "fug",
+											"type": "string",
+											"description": "(Required) "
+										}
+									]
+								},
+								"description": "Returns a single company record matching the ```companyId``` you specify"
+							},
+							"response": [
+								{
+									"name": "Successful operation",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/companies/:companyId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"companies",
+												":companyId"
+											],
+											"variable": [
+												{
+													"key": "companyId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"id\": \"a4dfc6bf-f02e-4a79-9844-66ba6c02ec3a\",\n \"name\": \"VFC Network, Inc\",\n \"address\": {\n  \"street\": \"48918 Liberty Lane Ave\",\n  \"city\": \"Denver\",\n  \"postalCode\": \"80210\",\n  \"country\": \"US\",\n  \"stateOrProvince\": \"Colorado\"\n },\n \"phone\": \"123-456-5555\",\n \"website\": \"vfc-network-inc-liberty.com\",\n \"status\": \"Active\",\n \"selfServiceAllowed\": false,\n \"billOnBehalfOfEnabled\": false,\n \"orderApprovalRequired\": false\n}"
+								},
+								{
+									"name": "Company not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/companies/:companyId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"companies",
+												":companyId"
+											],
+											"variable": [
+												{
+													"key": "companyId"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Create a new Company",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"VFC Network, Inc\",\n    \"address\": {\n        \"street\": \"48918 Liberty Lane Ave\",\n        \"city\": \"Denver\",\n        \"postalCode\": \"80210\",\n        \"country\": \"US\",\n        \"stateOrProvince\": \"Colorado\"\n    },\n    \"phone\": \"123-456-5555\",\n    \"website\": \"vfc-network-inc-liberty.com\",\n    \"status\": \"Active\",\n    \"selfServiceAllowed\": false,\n    \"billOnBehalfOfEnabled\": false,\n    \"orderApprovalRequired\": false\n}"
+						},
+						"url": "{{baseUrl}}/companies",
+						"description": "Creates a new Company. The Company will be placed in an inactive status until the Company has primary Contacts added"
+					},
+					"response": [
+						{
+							"name": "Successful Company create",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": {
+											"content": "Added as a part of security scheme: oauth2",
+											"type": "text/plain"
+										},
+										"key": "Authorization",
+										"value": "<token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"VFC Network, Inc\",\n    \"address\": {\n        \"street\": \"48918 Liberty Lane Ave\",\n        \"city\": \"Denver\",\n        \"postalCode\": \"80210\",\n        \"country\": \"US\",\n        \"stateOrProvince\": \"Colorado\"\n    },\n    \"phone\": \"123-456-5555\",\n    \"website\": \"vfc-network-inc-liberty.com\",\n    \"status\": \"Active\",\n    \"selfServiceAllowed\": false,\n    \"billOnBehalfOfEnabled\": false,\n    \"orderApprovalRequired\": false\n}"
+								},
+								"url": "{{baseUrl}}/companies"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"id\": \"a4dfc6bf-f02e-4a79-9844-66ba6c02ec3a\",\n \"name\": \"VFC Network, Inc\",\n \"address\": {\n  \"street\": \"48918 Liberty Lane Ave\",\n  \"city\": \"Denver\",\n  \"postalCode\": \"80210\",\n  \"country\": \"US\",\n  \"stateOrProvince\": \"Colorado\"\n },\n \"phone\": \"123-456-5555\",\n \"website\": \"vfc-network-inc-liberty.com\",\n \"status\": \"Active\",\n \"selfServiceAllowed\": false,\n \"billOnBehalfOfEnabled\": false,\n \"orderApprovalRequired\": false\n}"
+						},
+						{
+							"name": "Invalid Company",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": {
+											"content": "Added as a part of security scheme: oauth2",
+											"type": "text/plain"
+										},
+										"key": "Authorization",
+										"value": "<token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"VFC Network, Inc\",\n    \"address\": {\n        \"street\": \"48918 Liberty Lane Ave\",\n        \"city\": \"Denver\",\n        \"postalCode\": \"80210\",\n        \"country\": \"US\",\n        \"stateOrProvince\": \"Colorado\"\n    },\n    \"phone\": \"123-456-5555\",\n    \"website\": \"vfc-network-inc-liberty.com\",\n    \"status\": \"Active\",\n    \"selfServiceAllowed\": false,\n    \"billOnBehalfOfEnabled\": false,\n    \"orderApprovalRequired\": false\n}"
+								},
+								"url": "{{baseUrl}}/companies"
+							},
+							"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"errors\": [\n  \"occaecat ut\",\n  \"eu enim exercitation\"\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Fetch a paginated list of your companies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/companies?page=0&size=10&sort=city&city=fug&country=fug&stateOrProvince=fug&postalCode=fug&selfServiceAllowed=true&billOnBehalfOfEnabled=true&orderApprovalRequired=true&status=Deleted",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"companies"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number to request for in the companies list"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Return this number of company records per page"
+								},
+								{
+									"key": "sort",
+									"value": "city",
+									"description": "Return companies sorted by this field and direction. Formatted as fieldName,direction - ex. sort=name,desc"
+								},
+								{
+									"key": "city",
+									"value": "fug",
+									"description": "Return only companies matching this ```city``` value"
+								},
+								{
+									"key": "country",
+									"value": "fug",
+									"description": "Return only companies matching this ```country``` value"
+								},
+								{
+									"key": "stateOrProvince",
+									"value": "fug",
+									"description": "Return only companies matching this ```stateOrProvince``` value"
+								},
+								{
+									"key": "postalCode",
+									"value": "fug",
+									"description": "Return only companies matching this ```postalCode``` value"
+								},
+								{
+									"key": "selfServiceAllowed",
+									"value": "true",
+									"description": "Return only companies matching this ```selfServiceAllowed``` value"
+								},
+								{
+									"key": "billOnBehalfOfEnabled",
+									"value": "true",
+									"description": "Return only companies matching this ```billOnBehalfOfEnabled``` value"
+								},
+								{
+									"key": "orderApprovalRequired",
+									"value": "true",
+									"description": "Return only companies matching this ```orderApprovalRequired``` value"
+								},
+								{
+									"key": "status",
+									"value": "Deleted",
+									"description": "Return only companies matching this ```status``` value"
+								}
+							]
+						},
+						"description": "Returns a paginated list of all your companies filtered by optional parameters"
+					},
+					"response": [
+						{
+							"name": "Successful operation",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": {
+											"content": "Added as a part of security scheme: oauth2",
+											"type": "text/plain"
+										},
+										"key": "Authorization",
+										"value": "<token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/companies?page=0&size=10&sort=city&city=fug&country=fug&stateOrProvince=fug&postalCode=fug&selfServiceAllowed=true&billOnBehalfOfEnabled=true&orderApprovalRequired=true&status=Deleted",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"companies"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "10"
+										},
+										{
+											"key": "sort",
+											"value": "city"
+										},
+										{
+											"key": "city",
+											"value": "fug"
+										},
+										{
+											"key": "country",
+											"value": "fug"
+										},
+										{
+											"key": "stateOrProvince",
+											"value": "fug"
+										},
+										{
+											"key": "postalCode",
+											"value": "fug"
+										},
+										{
+											"key": "selfServiceAllowed",
+											"value": "true"
+										},
+										{
+											"key": "billOnBehalfOfEnabled",
+											"value": "true"
+										},
+										{
+											"key": "orderApprovalRequired",
+											"value": "true"
+										},
+										{
+											"key": "status",
+											"value": "Deleted"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"content\": [\n  {\n   \"id\": \"9ba32659-d339-4539-be21-1f461dc1a415\",\n   \"name\": \"112 Cloud Communications Backup\",\n   \"address\": {\n    \"street\": \"6905 N Winterhold Drive\",\n    \"city\": \"Dayton\",\n    \"postalCode\": \"82691\",\n    \"country\": \"US\",\n    \"stateOrProvince\": \"Utah\"\n   },\n   \"website\": \"cloud-communications-backup.com\",\n   \"status\": \"Active\",\n   \"selfServiceAllowed\": true,\n   \"billOnBehalfOfEnabled\": true\n  },\n  {\n   \"id\": \"0d3f48ae-9764-4b3a-9554-d28fe345230c\",\n   \"name\": \"021 Modern Executive\",\n   \"address\": {\n    \"street\": \"15320 Pipeline St\",\n    \"city\": \"Tacoma\",\n    \"postalCode\": \"50921\",\n    \"country\": \"CA\",\n    \"stateOrProvince\": \"Ontario\"\n   },\n   \"website\": \"021-modern-executive.com\",\n   \"status\": \"Active\",\n   \"selfServiceAllowed\": true,\n   \"billOnBehalfOfEnabled\": false\n  },\n  {\n   \"id\": \"d904c896-e19e-4daa-9b73-c992a000ad8a\",\n   \"name\": \"047 Acupuncture Search, Inc.\",\n   \"address\": {\n    \"street\": \"asdasdasd4 Commerce Ave\",\n    \"city\": \"Centennial\",\n    \"postalCode\": \"92426\",\n    \"country\": \"US\",\n    \"stateOrProvince\": \"Colorado\"\n   },\n   \"website\": \"32peakviewave.com\",\n   \"status\": \"Active\",\n   \"selfServiceAllowed\": false,\n   \"billOnBehalfOfEnabled\": false\n  },\n  {\n   \"id\": \"e74bc79a-71ce-414e-a8e9-d6a155933f86\",\n   \"name\": \"0633 - Citizens State Bank\",\n   \"address\": {\n    \"street\": \"2445 South West Ski Rd\",\n    \"city\": \"Salt Lake City\",\n    \"postalCode\": \"79510\",\n    \"country\": \"US\",\n    \"stateOrProvince\": \"Texas\"\n   },\n   \"website\": \"sout-west-ski-2.com\",\n   \"status\": \"Inactive\",\n   \"selfServiceAllowed\": false,\n   \"billOnBehalfOfEnabled\": false\n  },\n  {\n   \"id\": \"9ebc4a03-1c08-4c8b-9cc7-f5eb0b686cc4\",\n   \"name\": \"0671 - Motivational County Bank Systems\",\n   \"address\": {\n    \"street\": \"10191 King Zane Ave N\",\n    \"city\": \"Buffalo Grove\",\n    \"postalCode\": \"61079\",\n    \"country\": \"US\",\n    \"stateOrProvince\": \"Connecticut\"\n   },\n   \"website\": \"motivational-county-bank-systems.com\",\n   \"status\": \"Active\",\n   \"selfServiceAllowed\": false,\n   \"billOnBehalfOfEnabled\": false\n  },\n  {\n   \"id\": \"81bfe305-e56c-483e-ba4f-943c3e31411a\",\n   \"name\": \"0721 - Bank of Physicians\",\n   \"address\": {\n    \"street\": \"7589 W. Bahia Rd Suite 300\",\n    \"city\": \"Scottsdale\",\n    \"postalCode\": \"52322\",\n    \"country\": \"US\",\n    \"stateOrProvince\": \"Indiana\"\n   },\n   \"website\": \"bank-of-physicians.net\",\n   \"status\": \"Active\",\n   \"selfServiceAllowed\": false,\n   \"billOnBehalfOfEnabled\": false\n  },\n  {\n   \"id\": \"20497fca-e228-44ae-8f2d-08296d7e0e4d\",\n   \"name\": \"072 - New Sharpco Veterinary Printing\",\n   \"address\": {\n    \"street\": \"Inks Greensboro Drive, Suite 200\",\n    \"city\": \"Winchester\",\n    \"postalCode\": \"61289\",\n    \"country\": \"US\",\n    \"stateOrProvince\": \"Arizona\"\n   },\n   \"website\": \"new-sharpco-veterinary-printing.com\",\n   \"status\": \"Active\",\n   \"selfServiceAllowed\": false,\n   \"billOnBehalfOfEnabled\": false\n  },\n  {\n   \"id\": \"eeb7763f-0d25-49a1-a3f6-842631abe0ff\",\n   \"name\": \"0841 - Precision Community Insurance\",\n   \"address\": {\n    \"street\": \"40915 Sorrento Mask Blvd.\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"89258\",\n    \"country\": \"US\",\n    \"stateOrProvince\": \"New Jersey\"\n   },\n   \"website\": \"precision-community-insurance.com\",\n   \"status\": \"Active\",\n   \"selfServiceAllowed\": false,\n   \"billOnBehalfOfEnabled\": false\n  },\n  {\n   \"id\": \"3953a817-c9b5-46bf-9002-8ba8648cd9a4\",\n   \"name\": \"0I-Ride Powersports\",\n   \"address\": {\n    \"street\": \"East Camelback Hwy, Suite 6711\",\n    \"city\": \"New Britain\",\n    \"postalCode\": \"55446-2800\",\n    \"country\": \"US\",\n    \"stateOrProvince\": \"North Carolina\"\n   },\n   \"website\": \"0i-ride-powersports.com\",\n   \"status\": \"Active\",\n   \"selfServiceAllowed\": false,\n   \"billOnBehalfOfEnabled\": false\n  },\n  {\n   \"id\": \"a4dfc6bf-f02e-4a79-9844-66ba6c02ec3a\",\n   \"name\": \"100 Smith Avenue Condos\",\n   \"address\": {\n    \"street\": \"2677 Carlson Willis Pkwy 618, Suite 1197\",\n    \"city\": \"Spring Park\",\n    \"postalCode\": \"85158\",\n    \"country\": \"US\",\n    \"stateOrProvince\": \"Arizona\"\n   },\n   \"website\": \"100-smith-avenue-condos.com\",\n   \"status\": \"Active\",\n   \"selfServiceAllowed\": false,\n   \"billOnBehalfOfEnabled\": false\n  }\n ],\n \"page\": {\n  \"size\": 10,\n  \"totalElements\": 65,\n  \"totalPages\": 7,\n  \"number\": 0\n }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "products",
+			"item": [
+				{
+					"name": "{product Id}",
+					"item": [
+						{
+							"name": "Fetch a product by its productId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/products/:productId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products",
+										":productId"
+									],
+									"variable": [
+										{
+											"key": "productId",
+											"value": "fug",
+											"type": "string",
+											"description": "(Required) "
+										}
+									]
+								},
+								"description": "Returns only the product record for the productId you specify"
+							},
+							"response": [
+								{
+									"name": "Product not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/products/:productId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":productId"
+											],
+											"variable": [
+												{
+													"key": "productId"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+								},
+								{
+									"name": "Successful operation",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/products/:productId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":productId"
+											],
+											"variable": [
+												{
+													"key": "productId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"id\": \"e91bba5e-a9a3-483f-b036-f80165d410e3\",\n \"name\": \"Microsoft Office 365 E3\",\n \"vendorName\": \"Microsoft\",\n \"shortDescription\": \"Microsoft Office 365 E3 includes fully installed Office applications across multiple devices, email hosting, HD video conferencing, and features to support compliance.\",\n \"sku\": \"MST-OFC-EE3-C100\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Fetch provisioning details for a specific product",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/products/:productId/provision-details",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products",
+										":productId",
+										"provision-details"
+									],
+									"variable": [
+										{
+											"key": "productId",
+											"value": "fug",
+											"type": "string",
+											"description": "(Required) "
+										}
+									]
+								},
+								"description": "Returns provisioning details for the specified productId"
+							},
+							"response": [
+								{
+									"name": "Successful operation",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/products/:productId/provision-details",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":productId",
+												"provision-details"
+											],
+											"variable": [
+												{
+													"key": "productId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"content\": [\n  {\n   \"label\": \"Does the customer have an existing Microsoft account and can they log into https://login.microsoftonline.com?\",\n   \"key\": \"msCustExists\",\n   \"valueType\": \"Single-Value\",\n   \"possibleValues\": [\n    \"No, the customer does not have a Microsoft account\",\n    \"Yes, the customer has and can log into their Microsoft account\"\n   ]\n  },\n  {\n   \"label\": \"Desired .onmicrosoft.com Customer Domain Prefix\",\n   \"key\": \"msDomain\",\n   \"valueType\": \"Input\",\n   \"description\": \"Do not include the TLD when entering your domain (e.g. mydomain.onmicrosoft.com should be entered as mydomain\"\n  },\n  {\n   \"label\": \"Contact First Name\",\n   \"key\": \"arrowContactFirstName\",\n   \"valueType\": \"Input\"\n  },\n  {\n   \"label\": \"Contact Last Name\",\n   \"key\": \"arrowContactLastName\",\n   \"valueType\": \"Input\"\n  },\n  {\n   \"label\": \"Contact Email\",\n   \"key\": \"arrowContactEmail\",\n   \"valueType\": \"Input\"\n  },\n  {\n   \"label\": \"Microsoft Customer Tenant ID\",\n   \"key\": \"msTenantId\",\n   \"valueType\": \"Input\"\n  },\n  {\n   \"label\": \"First Name\",\n   \"key\": \"mca2020FirstName\",\n   \"valueType\": \"Input\"\n  },\n  {\n   \"label\": \"Last Name\",\n   \"key\": \"mca2020LastName\",\n   \"valueType\": \"Input\"\n  },\n  {\n   \"label\": \"Email Address\",\n   \"key\": \"mca2020Email\",\n   \"valueType\": \"Input\"\n  },\n  {\n   \"label\": \"Date of Acceptance\",\n   \"key\": \"mca2020EffectiveDate\",\n   \"valueType\": \"Input\",\n   \"description\": \"(YYYY-MM-DD)\"\n  }\n ]\n}"
+								},
+								{
+									"name": "Product not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/products/:productId/provision-details",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":productId",
+												"provision-details"
+											],
+											"variable": [
+												{
+													"key": "productId"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Fetch a list of product dependencies for a specified product",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/products/:productId/dependencies",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products",
+										":productId",
+										"dependencies"
+									],
+									"variable": [
+										{
+											"key": "productId",
+											"value": "fug",
+											"type": "string",
+											"description": "(Required) "
+										}
+									]
+								},
+								"description": "Returns associated dependencies for the specified ```productId```"
+							},
+							"response": [
+								{
+									"name": "Successful operation",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/products/:productId/dependencies",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":productId",
+												"dependencies"
+											],
+											"variable": [
+												{
+													"key": "productId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"commitmentDependencies\": [\n  {\n   \"id\": \"497f6eca-6276-4993-bfeb-53cbbbba6f08\",\n   \"term\": \"3-Year\",\n   \"autoRenew\": true,\n   \"renewalWindowDaysBeforeTermEnd\": 0,\n   \"renewalWindowDaysAfterTermEnd\": 0,\n   \"allowForQuantityIncrease\": true,\n   \"allowForQuantityDecrease\": true,\n   \"allowForEarlyCancellation\": true,\n   \"cancellationFeeApplied\": true,\n   \"isTransferable\": true\n  }\n ],\n \"productDependencies\": [\n  {\n   \"name\": \"Requires\",\n   \"products\": [\n    {\n     \"id\": \"497f6eca-6276-4993-bfeb-53cbbbba6f08\",\n     \"name\": \"Acme Corps Productivity Suite\",\n     \"vendorName\": \"Acme Corps\",\n     \"shortDescription\": \"Short description about the product to sell\",\n     \"sku\": \"4225-776-3234\"\n    }\n   ]\n  }\n ]\n}"
+								},
+								{
+									"name": "Product not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/products/:productId/dependencies",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":productId",
+												"dependencies"
+											],
+											"variable": [
+												{
+													"key": "productId"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Fetch pricing information for a particular product",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/products/:productId/pricing?companyId=urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products",
+										":productId",
+										"pricing"
+									],
+									"query": [
+										{
+											"key": "companyId",
+											"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+											"description": "Use the companyId in the query to see company-specific pricing"
+										}
+									],
+									"variable": [
+										{
+											"key": "productId",
+											"value": "fug",
+											"type": "string",
+											"description": "(Required) The product id"
+										}
+									]
+								},
+								"description": "Returns recommended pricing and partner cost for the specified productId"
+							},
+							"response": [
+								{
+									"name": "Product not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/products/:productId/pricing?companyId=urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":productId",
+												"pricing"
+											],
+											"query": [
+												{
+													"key": "companyId",
+													"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f"
+												}
+											],
+											"variable": [
+												{
+													"key": "productId"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+								},
+								{
+									"name": "successful operation",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/products/:productId/pricing?companyId=urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"products",
+												":productId",
+												"pricing"
+											],
+											"query": [
+												{
+													"key": "companyId",
+													"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f"
+												}
+											],
+											"variable": [
+												{
+													"key": "productId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"content\": [\n  {\n   \"billingTerm\": \"Trial\",\n   \"type\": \"Flat\",\n   \"unitOfMeasurement\": \"Each\",\n   \"rates\": {}\n  },\n  {\n   \"billingTerm\": \"Trial\",\n   \"type\": \"Flat\",\n   \"unitOfMeasurement\": \"Each\",\n   \"rates\": {}\n  }\n ]\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Fetch a paginated list of Pax8 products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?page=0&size=10&sort=name&vendorName=fug",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "The page number to request for in the products list"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Return this number of products per page"
+								},
+								{
+									"key": "sort",
+									"value": "name",
+									"description": "Return products sorted by the field and direction specified. Formatted as fieldName, direction - ex. sort=name,desc"
+								},
+								{
+									"key": "vendorName",
+									"value": "fug",
+									"description": "Return only products matching the specified vendor name"
+								}
+							]
+						},
+						"description": "Returns a paginated list of Pax8 products filtered by optional query parameters"
+					},
+					"response": [
+						{
+							"name": "Successful operation",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": {
+											"content": "Added as a part of security scheme: oauth2",
+											"type": "text/plain"
+										},
+										"key": "Authorization",
+										"value": "<token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/products?page=0&size=10&sort=name&vendorName=fug",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"products"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "10"
+										},
+										{
+											"key": "sort",
+											"value": "name"
+										},
+										{
+											"key": "vendorName",
+											"value": "fug"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"content\": [\n  {\n   \"id\": \"urn:uuid:95d75762-9644-eefb-6665-bd46d4af4501\",\n   \"name\": \"Acme Corps Productivity Suite\",\n   \"vendorName\": \"Acme Corps\",\n   \"shortDescription\": \"Short description about the product to sell\",\n   \"sku\": \"4225-776-3234\"\n  },\n  {\n   \"id\": \"681fa756-242c-b874-8163-dcdbd26c4ea7\",\n   \"name\": \"Acme Corps Productivity Suite\",\n   \"vendorName\": \"Acme Corps\",\n   \"shortDescription\": \"Short description about the product to sell\",\n   \"sku\": \"4225-776-3234\"\n  }\n ],\n \"page\": {\n  \"size\": 50,\n  \"totalElements\": {},\n  \"totalPages\": {},\n  \"number\": {}\n }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "orders",
+			"item": [
+				{
+					"name": "Fetch a paginated list of orders associated with your partner",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders?page=0&size=10&companyId=urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "(Required) The page number to request for in the orders list"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "(Required) "
+								},
+								{
+									"key": "companyId",
+									"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+									"description": "The company id to filter on"
+								}
+							]
+						},
+						"description": "Returns a paginated list of orders"
+					},
+					"response": [
+						{
+							"name": "Successful operation",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": {
+											"content": "Added as a part of security scheme: oauth2",
+											"type": "text/plain"
+										},
+										"key": "Authorization",
+										"value": "<token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/orders?page=0&size=10&companyId=urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "10"
+										},
+										{
+											"key": "companyId",
+											"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"content\": [\n  {\n   \"id\": \"urn:uuid:e40fb92a-6692-8887-fccb-39f853acca40\",\n   \"companyId\": \"urn:uuid:567b07a4-a381-d267-9f52-9b69e19edd45\",\n   \"createdDate\": \"1979-04-22\",\n   \"lineItems\": [\n    {\n     \"productId\": \"ceeea887-39f1-2710-6bad-76fdd9a58ad9\",\n     \"id\": \"ab849bbf-98f8-5950-5273-22641356d9d6\",\n     \"commitmentTermId\": \"647a0d7f-e93d-3b78-3249-ab79fa002c3a\",\n     \"provisionStartDate\": \"2017-06-04\",\n     \"billingTerm\": \"1-Time\",\n     \"quantity\": 45\n    },\n    {\n     \"productId\": \"urn:uuid:62953bab-b5f6-ded1-57cb-c831fcf6d5bc\",\n     \"id\": \"urn:uuid:3185776f-a08b-e058-89b9-74d18a7c3194\",\n     \"commitmentTermId\": \"a6b2ae60-cb34-3ff9-643b-3818adf0bf2a\",\n     \"provisionStartDate\": \"1965-11-09\",\n     \"billingTerm\": \"1-Time\",\n     \"quantity\": 45\n    }\n   ]\n  },\n  {\n   \"id\": \"1f7eafa9-d001-21c1-e7f3-68bc4a0146bc\",\n   \"companyId\": \"urn:uuid:93913bbd-b8c7-2088-a520-0eb3a0254d45\",\n   \"createdDate\": \"1952-06-22\",\n   \"lineItems\": [\n    {\n     \"productId\": \"urn:uuid:aee46fbb-14db-0d3b-d36b-8c79e725e985\",\n     \"id\": \"urn:uuid:63467a69-6f0c-29be-722d-ed43f1c11943\",\n     \"commitmentTermId\": \"urn:uuid:7426c1d2-ead3-14a5-a306-5c0bbabcab3b\",\n     \"provisionStartDate\": \"1943-04-02\",\n     \"billingTerm\": \"1-Time\",\n     \"quantity\": 45\n    },\n    {\n     \"productId\": \"1d3ae925-aa15-3789-e843-eb5a1fbf9819\",\n     \"id\": \"urn:uuid:e062aade-3c23-56f2-a378-ea0dc0abdb0c\",\n     \"commitmentTermId\": \"657b4aac-1e44-3bb2-af8c-f590b20756b4\",\n     \"provisionStartDate\": \"2020-12-03\",\n     \"billingTerm\": \"Monthly\",\n     \"quantity\": 45\n    }\n   ]\n  }\n ],\n \"page\": {\n  \"size\": 50,\n  \"totalElements\": {},\n  \"totalPages\": {},\n  \"number\": {}\n }\n}"
+						},
+						{
+							"name": "Order not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": {
+											"content": "Added as a part of security scheme: oauth2",
+											"type": "text/plain"
+										},
+										"key": "Authorization",
+										"value": "<token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/orders?page=0&size=10&companyId=urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "10"
+										},
+										{
+											"key": "companyId",
+											"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Create a new order for a specified company",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"companyId\": \"fe7a2d5f-4a14-43ff-940e-a65cda66474a\",\n    \"lineItems\": [\n        {\n            \"productId\": \"e91bba5e-a9a3-483f-b036-f80165d410e3\",\n            \"provisionStartDate\": \"2021-01-01\",\n            \"billingTerm\": \"Monthly\",\n            \"quantity\": 5,\n            \"provisioningDetails\": [\n                {\n                    \"key\": \"msCustExists\",\n                    \"values\": [\n                        \"No, the customer does not have a Microsoft account\"\n                    ]\n                },\n                {\n                    \"key\": \"msDomain\",\n                    \"values\": [\n                        \"vfc-network-inc-liberty\"\n                    ]\n                },\n                {\n                    \"key\": \"arrowContactFirstName\",\n                    \"values\": [\n                        \"Oliver\"\n                    ]\n                },\n                {\n                    \"key\": \"arrowContactLastName\",\n                    \"values\": [\n                        \"Harrison\"\n                    ]\n                },\n                {\n                    \"key\": \"arrowContactEmail\",\n                    \"values\": [\n                        \"oharrison@vfc-network-inc-liberty.com\"\n                    ]\n                },\n                {\n                    \"key\": \"mca2020FirstName\",\n                    \"values\": [\n                        \"Oliver\"\n                    ]\n                },\n                {\n                    \"key\": \"mca2020LastName\",\n                    \"values\": [\n                        \"Harrison\"\n                    ]\n                },\n                {\n                    \"key\": \"mca2020Email\",\n                    \"values\": [\n                        \"oharrison@vfc-network-inc-liberty.com\"\n                    ]\n                },\n                {\n                    \"key\": \"mca2020EffectiveDate\",\n                    \"values\": [\n                        \"2020-02-01\"\n                    ]\n                }\n            ]\n        }\n    ]\n}"
+						},
+						"url": "{{baseUrl}}/orders"
+					},
+					"response": [
+						{
+							"name": "Successful operation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": {
+											"content": "Added as a part of security scheme: oauth2",
+											"type": "text/plain"
+										},
+										"key": "Authorization",
+										"value": "<token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"companyId\": \"fe7a2d5f-4a14-43ff-940e-a65cda66474a\",\n    \"lineItems\": [\n        {\n            \"productId\": \"e91bba5e-a9a3-483f-b036-f80165d410e3\",\n            \"provisionStartDate\": \"2021-01-01\",\n            \"billingTerm\": \"Monthly\",\n            \"quantity\": 5,\n            \"provisioningDetails\": [\n                {\n                    \"key\": \"msCustExists\",\n                    \"values\": [\n                        \"No, the customer does not have a Microsoft account\"\n                    ]\n                },\n                {\n                    \"key\": \"msDomain\",\n                    \"values\": [\n                        \"vfc-network-inc-liberty\"\n                    ]\n                },\n                {\n                    \"key\": \"arrowContactFirstName\",\n                    \"values\": [\n                        \"Oliver\"\n                    ]\n                },\n                {\n                    \"key\": \"arrowContactLastName\",\n                    \"values\": [\n                        \"Harrison\"\n                    ]\n                },\n                {\n                    \"key\": \"arrowContactEmail\",\n                    \"values\": [\n                        \"oharrison@vfc-network-inc-liberty.com\"\n                    ]\n                },\n                {\n                    \"key\": \"mca2020FirstName\",\n                    \"values\": [\n                        \"Oliver\"\n                    ]\n                },\n                {\n                    \"key\": \"mca2020LastName\",\n                    \"values\": [\n                        \"Harrison\"\n                    ]\n                },\n                {\n                    \"key\": \"mca2020Email\",\n                    \"values\": [\n                        \"oharrison@vfc-network-inc-liberty.com\"\n                    ]\n                },\n                {\n                    \"key\": \"mca2020EffectiveDate\",\n                    \"values\": [\n                        \"2020-02-01\"\n                    ]\n                }\n            ]\n        }\n    ]\n}"
+								},
+								"url": "{{baseUrl}}/orders"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"id\": \"8e42de97-6bfe-4db5-864b-d2e4b18c71e2\",\n \"companyId\": \"fe7a2d5f-4a14-43ff-940e-a65cda66474a\",\n \"createdDate\": \"2020-12-01\",\n \"lineItems\": [\n  {\n   \"id\": \"4915142b-1b3f-4488-9e68-e979dc661130\",\n   \"productId\": \"e91bba5e-a9a3-483f-b036-f80165d410e3\",\n   \"provisionStartDate\": \"2021-01-01\",\n   \"billingTerm\": \"Monthly\",\n   \"quantity\": 5\n  }\n ]\n}"
+						},
+						{
+							"name": "Invalid order",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"description": {
+											"content": "Added as a part of security scheme: oauth2",
+											"type": "text/plain"
+										},
+										"key": "Authorization",
+										"value": "<token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"companyId\": \"fe7a2d5f-4a14-43ff-940e-a65cda66474a\",\n    \"lineItems\": [\n        {\n            \"productId\": \"e91bba5e-a9a3-483f-b036-f80165d410e3\",\n            \"provisionStartDate\": \"2021-01-01\",\n            \"billingTerm\": \"Monthly\",\n            \"quantity\": 5,\n            \"provisioningDetails\": [\n                {\n                    \"key\": \"msCustExists\",\n                    \"values\": [\n                        \"No, the customer does not have a Microsoft account\"\n                    ]\n                },\n                {\n                    \"key\": \"msDomain\",\n                    \"values\": [\n                        \"vfc-network-inc-liberty\"\n                    ]\n                },\n                {\n                    \"key\": \"arrowContactFirstName\",\n                    \"values\": [\n                        \"Oliver\"\n                    ]\n                },\n                {\n                    \"key\": \"arrowContactLastName\",\n                    \"values\": [\n                        \"Harrison\"\n                    ]\n                },\n                {\n                    \"key\": \"arrowContactEmail\",\n                    \"values\": [\n                        \"oharrison@vfc-network-inc-liberty.com\"\n                    ]\n                },\n                {\n                    \"key\": \"mca2020FirstName\",\n                    \"values\": [\n                        \"Oliver\"\n                    ]\n                },\n                {\n                    \"key\": \"mca2020LastName\",\n                    \"values\": [\n                        \"Harrison\"\n                    ]\n                },\n                {\n                    \"key\": \"mca2020Email\",\n                    \"values\": [\n                        \"oharrison@vfc-network-inc-liberty.com\"\n                    ]\n                },\n                {\n                    \"key\": \"mca2020EffectiveDate\",\n                    \"values\": [\n                        \"2020-02-01\"\n                    ]\n                }\n            ]\n        }\n    ]\n}"
+								},
+								"url": "{{baseUrl}}/orders"
+							},
+							"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Fetch order details by orderId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/:orderId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "fug",
+									"type": "string",
+									"description": "(Required) The unique identifier for an order record"
+								}
+							]
+						},
+						"description": "Returns the Order record specified by OrderId"
+					},
+					"response": [
+						{
+							"name": "Successful operation",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": {
+											"content": "Added as a part of security scheme: oauth2",
+											"type": "text/plain"
+										},
+										"key": "Authorization",
+										"value": "<token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/orders/:orderId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										":orderId"
+									],
+									"variable": [
+										{
+											"key": "orderId"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"id\": \"8e42de97-6bfe-4db5-864b-d2e4b18c71e2\",\n \"companyId\": \"fe7a2d5f-4a14-43ff-940e-a65cda66474a\",\n \"createdDate\": \"2020-12-01\",\n \"lineItems\": [\n  {\n   \"id\": \"4915142b-1b3f-4488-9e68-e979dc661130\",\n   \"productId\": \"e91bba5e-a9a3-483f-b036-f80165d410e3\",\n   \"provisionStartDate\": \"2021-01-01\",\n   \"billingTerm\": \"Monthly\",\n   \"quantity\": 5\n  }\n ]\n}"
+						},
+						{
+							"name": "Invalid order id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": {
+											"content": "Added as a part of security scheme: oauth2",
+											"type": "text/plain"
+										},
+										"key": "Authorization",
+										"value": "<token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/orders/:orderId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										":orderId"
+									],
+									"variable": [
+										{
+											"key": "orderId"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "subscriptions",
+			"item": [
+				{
+					"name": "{subscription Id}",
+					"item": [
+						{
+							"name": "Fetch a subscription by subscriptionId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/subscriptions/:subscriptionId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"subscriptions",
+										":subscriptionId"
+									],
+									"variable": [
+										{
+											"key": "subscriptionId",
+											"value": "fug",
+											"type": "string",
+											"description": "(Required) "
+										}
+									]
+								},
+								"description": "Returns the Subscription record specified by the subscriptionId"
+							},
+							"response": [
+								{
+									"name": "Subscription not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/subscriptions/:subscriptionId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"subscriptions",
+												":subscriptionId"
+											],
+											"variable": [
+												{
+													"key": "subscriptionId"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+								},
+								{
+									"name": "Successful operation",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/subscriptions/:subscriptionId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"subscriptions",
+												":subscriptionId"
+											],
+											"variable": [
+												{
+													"key": "subscriptionId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"id\": \"05c587df-9e7d-4ef9-8218-0262198e36c9\",\n \"companyId\": \"fe7a2d5f-4a14-43ff-940e-a65cda66474a\",\n \"productId\": \"e91bba5e-a9a3-483f-b036-f80165d410e3\",\n \"quantity\": 5,\n \"startDate\": \"2021-01-01\",\n \"createdDate\": \"2020-12-01\",\n \"billingStart\": \"2021-01-01\",\n \"status\": \"Active\",\n \"price\": 32.01,\n \"billingTerm\": \"Monthly\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Update a specified subscription",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"quantity\": 97110311.67912355,\n    \"startDate\": \"2012-04-08\",\n    \"endDate\": \"1945-04-15\",\n    \"price\": 15.39,\n    \"billingTerm\": \"Trial\",\n    \"provisioningDetails\": [\n        {\n            \"key\": \"userEmailAddress\",\n            \"values\": [\n                \"minim esse\",\n                \"aute adipisicing tempor Duis\"\n            ]\n        },\n        {\n            \"key\": \"userEmailAddress\",\n            \"values\": [\n                \"aliquip voluptate\",\n                \"tempor eiusmod esse Ut quis\"\n            ]\n        }\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/subscriptions/:subscriptionId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"subscriptions",
+										":subscriptionId"
+									],
+									"variable": [
+										{
+											"key": "subscriptionId",
+											"value": "fug",
+											"type": "string",
+											"description": "(Required) subscription to be updated"
+										}
+									]
+								},
+								"description": "Updates a subscription"
+							},
+							"response": [
+								{
+									"name": "Invalid Subscription Update",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"quantity\": -12502188.706320047,\n    \"startDate\": \"1961-01-05\",\n    \"endDate\": \"1989-06-05\",\n    \"price\": 15.39,\n    \"billingTerm\": \"Monthly\",\n    \"provisioningDetails\": [\n        {\n            \"key\": \"userEmailAddress\",\n            \"values\": [\n                \"nisi velit nostrud\",\n                \"in est do ex\"\n            ]\n        },\n        {\n            \"key\": \"userEmailAddress\",\n            \"values\": [\n                \"enim ex et\",\n                \"ipsum eu ut\"\n            ]\n        }\n    ]\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/subscriptions/:subscriptionId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"subscriptions",
+												":subscriptionId"
+											],
+											"variable": [
+												{
+													"key": "subscriptionId"
+												}
+											]
+										}
+									},
+									"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+									"code": 422,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+								},
+								{
+									"name": "Subscription not found",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"quantity\": -12502188.706320047,\n    \"startDate\": \"1961-01-05\",\n    \"endDate\": \"1989-06-05\",\n    \"price\": 15.39,\n    \"billingTerm\": \"Monthly\",\n    \"provisioningDetails\": [\n        {\n            \"key\": \"userEmailAddress\",\n            \"values\": [\n                \"nisi velit nostrud\",\n                \"in est do ex\"\n            ]\n        },\n        {\n            \"key\": \"userEmailAddress\",\n            \"values\": [\n                \"enim ex et\",\n                \"ipsum eu ut\"\n            ]\n        }\n    ]\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/subscriptions/:subscriptionId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"subscriptions",
+												":subscriptionId"
+											],
+											"variable": [
+												{
+													"key": "subscriptionId"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+								},
+								{
+									"name": "Successful operation",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"quantity\": -12502188.706320047,\n    \"startDate\": \"1961-01-05\",\n    \"endDate\": \"1989-06-05\",\n    \"price\": 15.39,\n    \"billingTerm\": \"Monthly\",\n    \"provisioningDetails\": [\n        {\n            \"key\": \"userEmailAddress\",\n            \"values\": [\n                \"nisi velit nostrud\",\n                \"in est do ex\"\n            ]\n        },\n        {\n            \"key\": \"userEmailAddress\",\n            \"values\": [\n                \"enim ex et\",\n                \"ipsum eu ut\"\n            ]\n        }\n    ]\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/subscriptions/:subscriptionId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"subscriptions",
+												":subscriptionId"
+											],
+											"variable": [
+												{
+													"key": "subscriptionId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "Cancel a subscription",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/subscriptions/:subscriptionId?cancelDate=2021-01-23",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"subscriptions",
+										":subscriptionId"
+									],
+									"query": [
+										{
+											"key": "cancelDate",
+											"value": "2021-01-23",
+											"description": "The date to cancel the subscription on"
+										}
+									],
+									"variable": [
+										{
+											"key": "subscriptionId",
+											"value": "fug",
+											"type": "string",
+											"description": "(Required) subscription to be updated"
+										}
+									]
+								},
+								"description": "Cancels the Subscription specified by subscriptionId"
+							},
+							"response": [
+								{
+									"name": "Successful operation",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/subscriptions/:subscriptionId?cancelDate=2021-01-23",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"subscriptions",
+												":subscriptionId"
+											],
+											"query": [
+												{
+													"key": "cancelDate",
+													"value": "2021-01-23"
+												}
+											],
+											"variable": [
+												{
+													"key": "subscriptionId"
+												}
+											]
+										}
+									},
+									"status": "No Content",
+									"code": 204,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "Subscription not found",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/subscriptions/:subscriptionId?cancelDate=2021-01-23",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"subscriptions",
+												":subscriptionId"
+											],
+											"query": [
+												{
+													"key": "cancelDate",
+													"value": "2021-01-23"
+												}
+											],
+											"variable": [
+												{
+													"key": "subscriptionId"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Fetch the history of a subscription",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/subscriptions/:subscriptionId/history",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"subscriptions",
+										":subscriptionId",
+										"history"
+									],
+									"variable": [
+										{
+											"key": "subscriptionId",
+											"value": "fug",
+											"type": "string",
+											"description": "(Required) "
+										}
+									]
+								},
+								"description": "Returns a list of changes for a subscription"
+							},
+							"response": [
+								{
+									"name": "Subscription not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/subscriptions/:subscriptionId/history",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"subscriptions",
+												":subscriptionId",
+												"history"
+											],
+											"variable": [
+												{
+													"key": "subscriptionId"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+								},
+								{
+									"name": "successful operation",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"description": {
+													"content": "Added as a part of security scheme: oauth2",
+													"type": "text/plain"
+												},
+												"key": "Authorization",
+												"value": "<token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/subscriptions/:subscriptionId/history",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"subscriptions",
+												":subscriptionId",
+												"history"
+											],
+											"variable": [
+												{
+													"key": "subscriptionId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"content\": [\n  {\n   \"id\": \"99b90e2e-cc01-4fb6-9dd2-3481196bfffe\",\n   \"companyId\": \"2aa4862a-9474-4138-9863-4f0a8e4cec74\",\n   \"productId\": \"4f76b357-9ac1-47fa-9369-feb80a32f87e\",\n   \"quantity\": 5,\n   \"startDate\": \"2021-01-01\",\n   \"createdDate\": \"2020-12-01T13:20:13.153-0700\",\n   \"updatedDate\": \"2020-12-10T03:12:14.453-0300\",\n   \"billingStart\": \"2021-01-01\",\n   \"status\": \"PendingAutomated\",\n   \"price\": 86,\n   \"billingTerm\": \"Monthly\"\n  },\n  {\n   \"id\": \"99b90e2e-cc01-4fb6-9dd2-3481196bfffe\",\n   \"companyId\": \"2aa4862a-9474-4138-9863-4f0a8e4cec74\",\n   \"productId\": \"4f76b357-9ac1-47fa-9369-feb80a32f87e\",\n   \"quantity\": 2,\n   \"startDate\": \"2020-12-01\",\n   \"createdDate\": \"2020-12-01T13:20:13.153-0700\",\n   \"billingStart\": \"2020-12-01\",\n   \"status\": \"Active\",\n   \"price\": 86,\n   \"billingTerm\": \"Monthly\"\n  }\n ]\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Fetch a paginated list of subscriptions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/subscriptions?page=0&size=10&sort=endDate&status=PendingCancel&billingTerm=One-Time&companyId=urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f&productId=urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"subscriptions"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "(Required) The page number to request in the companies list"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "(Required) Returns _this_ number of subsciptions per page"
+								},
+								{
+									"key": "sort",
+									"value": "endDate",
+									"description": "Return subscriptions sorted by this field and direction Formatted as fieldName,direction - ex. sort=createdDate,desc"
+								},
+								{
+									"key": "status",
+									"value": "PendingCancel",
+									"description": "Return only subscriptions matching this ```status``` value"
+								},
+								{
+									"key": "billingTerm",
+									"value": "One-Time",
+									"description": "Return only subscriptions matching this ```billingTerm``` value"
+								},
+								{
+									"key": "companyId",
+									"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+									"description": "Return only subsciptions matching this ```companyId``` value"
+								},
+								{
+									"key": "productId",
+									"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+									"description": "Return only subsciptions matching this ```productId``` value"
+								}
+							]
+						},
+						"description": "Fetch a paginated list of subscriptions. Default page is 0 and default size is 10. The maximum page size is 200"
+					},
+					"response": [
+						{
+							"name": "Successful operation",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": {
+											"content": "Added as a part of security scheme: oauth2",
+											"type": "text/plain"
+										},
+										"key": "Authorization",
+										"value": "<token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/subscriptions?page=0&size=10&sort=endDate&status=PendingCancel&billingTerm=One-Time&companyId=urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f&productId=urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"subscriptions"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "10"
+										},
+										{
+											"key": "sort",
+											"value": "endDate"
+										},
+										{
+											"key": "status",
+											"value": "PendingCancel"
+										},
+										{
+											"key": "billingTerm",
+											"value": "One-Time"
+										},
+										{
+											"key": "companyId",
+											"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f"
+										},
+										{
+											"key": "productId",
+											"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"content\": [\n  {\n   \"id\": \"09ac6f1d-c30a-4d03-9882-145a4df71735\",\n   \"companyId\": \"19e83ea9-41a1-43fc-91a1-6fee03337d91\",\n   \"productId\": \"1810aea9-0c95-421d-a77a-7ebccdfa2f6c\",\n   \"quantity\": 5,\n   \"startDate\": \"2021-01-01\",\n   \"createdDate\": \"2020-12-03\",\n   \"billingStart\": \"2021-01-01\",\n   \"status\": \"PendingAutomated\",\n   \"price\": 150,\n   \"billingTerm\": \"Monthly\"\n  },\n  {\n   \"id\": \"e8f372b6-e2aa-4f3c-9baa-b34f31c921e5\",\n   \"companyId\": \"da300208-0c17-4b6f-ab82-e1e7c0b98362\",\n   \"productId\": \"5766ecd7-a0bf-4ee0-ba1d-bd3ca92ca555\",\n   \"quantity\": 1,\n   \"startDate\": \"2020-11-12\",\n   \"endDate\": \"2020-11-18\",\n   \"createdDate\": \"2020-11-11\",\n   \"billingStart\": \"2020-11-12\",\n   \"status\": \"PendingCancel\",\n   \"price\": 100,\n   \"billingTerm\": \"Monthly\"\n  },\n  {\n   \"id\": \"d1758c49-f81c-48af-8f30-e7e93adf6acc\",\n   \"companyId\": \"da300208-0c17-4b6f-ab82-e1e7c0b98362\",\n   \"productId\": \"7597a0fd-f0ec-4547-8a20-fd2d3f311a5c\",\n   \"quantity\": 1,\n   \"startDate\": \"2020-11-12\",\n   \"endDate\": \"2020-11-12\",\n   \"createdDate\": \"2020-11-11\",\n   \"billingStart\": \"2020-11-12\",\n   \"status\": \"PendingCancel\",\n   \"price\": 0,\n   \"billingTerm\": \"Monthly\"\n  },\n  {\n   \"id\": \"a95e2d7c-cdcf-4cf9-8c94-34ce71e06fa1\",\n   \"companyId\": \"dbb4aa30-6b8b-425c-96c0-c72e570b28af\",\n   \"productId\": \"25d15d2e-b293-4393-9e16-e6890a6650b0\",\n   \"quantity\": 1,\n   \"startDate\": \"2020-11-11\",\n   \"endDate\": \"2020-11-30\",\n   \"createdDate\": \"2020-11-11\",\n   \"billingStart\": \"2020-11-11\",\n   \"status\": \"PendingCancel\",\n   \"price\": 250,\n   \"billingTerm\": \"Monthly\"\n  },\n  {\n   \"id\": \"b010a5d2-d604-434d-b331-d1a3ae6e759e\",\n   \"companyId\": \"0c5bd95d-bd33-4bb0-8419-a821c00173dd\",\n   \"productId\": \"2d3432cb-5a61-4f87-a197-7ea8e2227aeb\",\n   \"quantity\": 8,\n   \"startDate\": \"2020-11-09\",\n   \"createdDate\": \"2020-11-09\",\n   \"billingStart\": \"2020-11-09\",\n   \"status\": \"Active\",\n   \"price\": 6,\n   \"billingTerm\": \"Monthly\"\n  },\n  {\n   \"id\": \"e03daa96-2b4c-4925-a0aa-cb8061faf4ca\",\n   \"companyId\": \"78329722-82e9-42e4-b220-d8d4215217e5\",\n   \"productId\": \"8540387d-967b-4bba-9a5c-2c41e5769c6e\",\n   \"quantity\": 7,\n   \"startDate\": \"2020-09-21\",\n   \"createdDate\": \"2020-09-21\",\n   \"billingStart\": \"2020-09-21\",\n   \"status\": \"PendingManual\",\n   \"price\": 77.77,\n   \"billingTerm\": \"Monthly\"\n  },\n  {\n   \"id\": \"ccfd1789-8f88-4c7c-9c10-d726f776c1dc\",\n   \"companyId\": \"df71a444-a03b-4e49-85d3-223d63ed500a\",\n   \"productId\": \"d0427628-5c3b-4258-b6f2-e6a3dfeb62ea\",\n   \"quantity\": 1,\n   \"startDate\": \"2020-09-21\",\n   \"createdDate\": \"2020-09-21\",\n   \"billingStart\": \"2020-09-21\",\n   \"status\": \"Active\",\n   \"price\": 33,\n   \"billingTerm\": \"Monthly\"\n  },\n  {\n   \"id\": \"4ad86d04-a5db-4934-be3e-b6f024123951\",\n   \"companyId\": \"b900f223-baeb-4e0f-8a3f-f03fc1f207fd\",\n   \"productId\": \"887b69fd-0171-4ea7-bc51-6e5ee1fc59c8\",\n   \"quantity\": 2,\n   \"startDate\": \"2020-04-30\",\n   \"createdDate\": \"2020-04-30\",\n   \"billingStart\": \"2020-04-30\",\n   \"status\": \"Active\",\n   \"price\": 1896,\n   \"billingTerm\": \"Monthly\"\n  },\n  {\n   \"id\": \"d9b4705f-b316-4e2b-959e-c542e01b749f\",\n   \"companyId\": \"47228505-4813-4024-a1fd-666e8a5bbf82\",\n   \"productId\": \"5278429f-97ea-4473-a571-798a06d26948\",\n   \"quantity\": 1,\n   \"startDate\": \"2020-04-23\",\n   \"createdDate\": \"2020-04-22\",\n   \"billingStart\": \"2020-04-23\",\n   \"status\": \"PendingManual\",\n   \"price\": 15,\n   \"billingTerm\": \"Monthly\"\n  },\n  {\n   \"id\": \"a7494751-4717-4fa6-a5fd-c817c3cf3b5c\",\n   \"companyId\": \"47228505-4813-4024-a1fd-666e8a5bbf82\",\n   \"productId\": \"887b69fd-0171-4ea7-bc51-6e5ee1fc59c8\",\n   \"quantity\": 1,\n   \"startDate\": \"2020-04-22\",\n   \"createdDate\": \"2020-04-22\",\n   \"billingStart\": \"2020-04-22\",\n   \"status\": \"Active\",\n   \"price\": 110,\n   \"billingTerm\": \"Monthly\"\n  }\n ],\n \"page\": {\n  \"size\": 10,\n  \"totalElements\": 109,\n  \"totalPages\": 11,\n  \"number\": 0\n }\n}"
+						},
+						{
+							"name": "Invalid companyId or productId",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"description": {
+											"content": "Added as a part of security scheme: oauth2",
+											"type": "text/plain"
+										},
+										"key": "Authorization",
+										"value": "<token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/subscriptions?page=0&size=10&sort=endDate&status=PendingCancel&billingTerm=One-Time&companyId=urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f&productId=urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"subscriptions"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "10"
+										},
+										{
+											"key": "sort",
+											"value": "endDate"
+										},
+										{
+											"key": "status",
+											"value": "PendingCancel"
+										},
+										{
+											"key": "billingTerm",
+											"value": "One-Time"
+										},
+										{
+											"key": "companyId",
+											"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f"
+										},
+										{
+											"key": "productId",
+											"value": "urn:uuid:ac82247c-2cdf-db0b-44e6-d42af9fbea9f"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n \"errors\": [\n  \"reprehenderit\",\n  \"id Ut eiusmod\"\n ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Create a new Access Token",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"client_id\": \"<client-id>\",\n    \"client_secret\": \"<client-secret>\",\n    \"audience\": \"api://p8p.client\",\n    \"grant_type\": \"client_credentials\"\n}"
+				},
+				"url": "https://login.pax8.com/oauth/token",
+				"description": "Create a new Access Token"
+			},
+			"response": [
+				{
+					"name": "successful operation",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"description": {
+									"content": "Added as a part of security scheme: oauth2",
+									"type": "text/plain"
+								},
+								"key": "Authorization",
+								"value": "<token>"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"client_id\": \"<client-id>\",\n    \"client_secret\": \"<client-secret>\",\n    \"audience\": \"api://p8p.client\",\n    \"grant_type\": \"client_credentials\"\n}"
+						},
+						"url": ""
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"access_token\": \"<access-token>\",\n \"expires_in\": 86400,\n \"token_type\": \"Bearer\"\n}"
+				},
+				{
+					"name": "Bad Request",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"description": {
+									"content": "Added as a part of security scheme: oauth2",
+									"type": "text/plain"
+								},
+								"key": "Authorization",
+								"value": "<token>"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"client_id\": \"<client-id>\",\n    \"client_secret\": \"<client-secret>\",\n    \"audience\": \"api://p8p.client\",\n    \"grant_type\": \"client_credentials\"\n}"
+						},
+						"url": ""
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"error\": \"invalid_request\",\n \"error_description\": \"Missing required parameter: grant_type\"\n}"
+				},
+				{
+					"name": "Unauthorized",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"description": {
+									"content": "Added as a part of security scheme: oauth2",
+									"type": "text/plain"
+								},
+								"key": "Authorization",
+								"value": "<token>"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"client_id\": \"<client-id>\",\n    \"client_secret\": \"<client-secret>\",\n    \"audience\": \"api://p8p.client\",\n    \"grant_type\": \"client_credentials\"\n}"
+						},
+						"url": ""
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"error\": \"access_denied\",\n \"error_description\": \"Unauthorized\"\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": {}
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://api.pax8.com/v1",
+			"type": "string"
+		}
+	]
+}
